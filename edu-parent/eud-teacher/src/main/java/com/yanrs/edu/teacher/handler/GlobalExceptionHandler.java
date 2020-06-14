@@ -32,4 +32,16 @@ public class GlobalExceptionHandler {
         e.printStackTrace();
         return R.error().message("除数不能为 0");
     }
+
+    /**
+     * 处理自定义异常
+     * @param e
+     * @return
+     */
+    @ExceptionHandler(EduException.class)
+    @ResponseBody
+    public R error(EduException e){
+        e.printStackTrace();
+        return R.error().message(e.getMessage()).code(e.getCode());
+    }
 }

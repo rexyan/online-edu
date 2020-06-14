@@ -3,10 +3,12 @@ package com.yanrs.edu.teacher.controller;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.yanrs.edu.common.R;
+import com.yanrs.edu.common.ResponseCode;
 import com.yanrs.edu.teacher.entity.Teacher;
 import com.yanrs.edu.teacher.entity.vo.AddTeacherReqVo;
 import com.yanrs.edu.teacher.entity.vo.TeacherListReqVo;
 import com.yanrs.edu.teacher.entity.vo.UpdateTeacherReqVo;
+import com.yanrs.edu.teacher.handler.EduException;
 import com.yanrs.edu.teacher.service.TeacherService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,7 +35,6 @@ public class TeacherController {
     // 查询所有讲师
     @GetMapping
     public R getAllTeacher() {
-        int a = 9/0;
         List<Teacher> teacherList = teacherService.list(null);
         return R.success().data("item", teacherList);
     }
@@ -49,16 +50,16 @@ public class TeacherController {
         }
     }
 
-    // 分页查询讲师列表
-    @GetMapping("/list/{currentPage}/{pageSize}")
-    public R getPageTeacher(@PathVariable("currentPage") Integer currentPage, @PathVariable("pageSize") Integer pageSize) {
-        Page<Teacher> teacherPage = new Page<>(currentPage, pageSize);
-        teacherService.page(teacherPage, null);
-        return R.success().data("total", teacherPage.getTotal()).data("items", teacherPage.getRecords());
-    }
+//    // 分页查询讲师列表
+//    @GetMapping("/list/{currentPage}/{pageSize}")
+//    public R getPageTeacher(@PathVariable("currentPage") Integer currentPage, @PathVariable("pageSize") Integer pageSize) {
+//        Page<Teacher> teacherPage = new Page<>(currentPage, pageSize);
+//        teacherService.page(teacherPage, null);
+//        return R.success().data("total", teacherPage.getTotal()).data("items", teacherPage.getRecords());
+//    }
 
     // 分页多条件查询讲师列表
-    @GetMapping("/condition/{currentPage}/{pageSize}")
+    @GetMapping("/list/{currentPage}/{pageSize}")
     public R getConditionPageTeacher(@PathVariable("currentPage") Integer currentPage, @PathVariable("pageSize") Integer pageSize, TeacherListReqVo teacherListReqVo) {
         Page<Teacher> teacherPage = new Page<>(currentPage, pageSize);
         teacherService.getTeacherListByCondition(teacherPage, teacherListReqVo);
@@ -88,6 +89,10 @@ public class TeacherController {
     // 根据 ID 修改讲师信息
     @PutMapping("{id}")
     public R updateTeacherById(@PathVariable("id") String id, @RequestBody UpdateTeacherReqVo updateTeacherReqVo) {
+        // 没有 updateTeacherReqVo 抛出异常
+        if (updateTeacherReqVo==null){
+            throw new EduException(ResponseCode.PARAM_INVAILD.getCode(), ResponseCode.PARAM_INVAILD.getMessage());
+        }
         Teacher teacher = new Teacher();
         BeanUtils.copyProperties(updateTeacherReqVo, teacher);
         teacher.setId(id);
