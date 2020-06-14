@@ -4,8 +4,11 @@ package com.yanrs.edu.teacher.controller;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.yanrs.edu.common.R;
 import com.yanrs.edu.teacher.entity.Teacher;
+import com.yanrs.edu.teacher.entity.vo.AddTeacherReqVo;
 import com.yanrs.edu.teacher.entity.vo.TeacherListReqVo;
+import com.yanrs.edu.teacher.entity.vo.UpdateTeacherReqVo;
 import com.yanrs.edu.teacher.service.TeacherService;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -30,6 +33,7 @@ public class TeacherController {
     // 查询所有讲师
     @GetMapping
     public R getAllTeacher() {
+        int a = 9/0;
         List<Teacher> teacherList = teacherService.list(null);
         return R.success().data("item", teacherList);
     }
@@ -38,9 +42,9 @@ public class TeacherController {
     @DeleteMapping("{id}")
     public R deleteTeacherById(@PathVariable("id") String id) {
         boolean removeById = teacherService.removeById(id);
-        if (removeById){
+        if (removeById) {
             return R.success();
-        }else{
+        } else {
             return R.fail();
         }
     }
@@ -59,6 +63,40 @@ public class TeacherController {
         Page<Teacher> teacherPage = new Page<>(currentPage, pageSize);
         teacherService.getTeacherListByCondition(teacherPage, teacherListReqVo);
         return R.success().data("total", teacherPage.getTotal()).data("items", teacherPage.getRecords());
+    }
+
+    // 添加讲师
+    @PostMapping
+    public R addTeacher(@RequestBody AddTeacherReqVo addTeacherReqVo) {
+        Teacher teacher = new Teacher();
+        BeanUtils.copyProperties(addTeacherReqVo, teacher);
+        boolean save = teacherService.save(teacher);
+        if (save) {
+            return R.success().data("teacher", teacher);
+        } else {
+            return R.fail();
+        }
+    }
+
+    // 根据 ID 查询讲师信息
+    @GetMapping("{id}")
+    public R getTeacherById(@PathVariable("id") String id) {
+        Teacher teacher = teacherService.getById(id);
+        return R.success().data("teacher", teacher);
+    }
+
+    // 根据 ID 修改讲师信息
+    @PutMapping("{id}")
+    public R updateTeacherById(@PathVariable("id") String id, @RequestBody UpdateTeacherReqVo updateTeacherReqVo) {
+        Teacher teacher = new Teacher();
+        BeanUtils.copyProperties(updateTeacherReqVo, teacher);
+        teacher.setId(id);
+        boolean update = teacherService.updateById(teacher);
+        if (update) {
+            return R.success().data("teacher", teacher);
+        } else {
+            return R.fail();
+        }
     }
 }
 

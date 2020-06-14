@@ -31,6 +31,15 @@ public class R {
         return r;
     }
 
+    //操作失败，调用这个方法，返回失败的数据
+    public static R error() {
+        R r = new R();
+        r.setSuccess(false);
+        r.setCode(ResponseCode.ERROR.getCode());
+        r.setMessage("系统异常");
+        return r;
+    }
+
     //使用链式编程
     public R success(Boolean success) {
         this.setSuccess(success);
