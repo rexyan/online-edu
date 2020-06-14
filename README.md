@@ -1,8 +1,10 @@
 ## 在线教育项目
 
-SpringBoot + SpringCloud  + MyBatis + MySQL + Redis + ZK + ES
-Vue + ES6 + Element 
-阿里云 OSS + 阿里云视频 + 阿里云短信 + 微信/支付宝支付 + 微信/支付宝登录
+SpringBoot + SpringCloud  + MyBatis + MyBatis Plus + MySQL + Redis  <br>
+
+Vue + ES6 + Element <br>
+
+阿里云 OSS + 阿里云视频 + 阿里云短信 + 微信/支付宝支付 + 微信/支付宝登录 <br>
 
 ### 会员
 * [ ] 系统门户
