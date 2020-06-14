@@ -53,7 +53,7 @@ public class TeacherController {
         return R.success().data("total", teacherPage.getTotal()).data("items", teacherPage.getRecords());
     }
 
-    // 分页查询讲师列表
+    // 分页多条件查询讲师列表
     @GetMapping("/condition/{currentPage}/{pageSize}")
     public R getConditionPageTeacher(@PathVariable("currentPage") Integer currentPage, @PathVariable("pageSize") Integer pageSize, TeacherListReqVo teacherListReqVo) {
         Page<Teacher> teacherPage = new Page<>(currentPage, pageSize);
