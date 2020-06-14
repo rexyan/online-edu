@@ -4,6 +4,7 @@ package com.yanrs.edu.teacher.controller;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.yanrs.edu.common.R;
 import com.yanrs.edu.teacher.entity.Teacher;
+import com.yanrs.edu.teacher.entity.vo.TeacherListReqVo;
 import com.yanrs.edu.teacher.service.TeacherService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -24,6 +25,7 @@ public class TeacherController {
     // 注入 TeacherService
     @Autowired
     private TeacherService teacherService;
+
 
     // 查询所有讲师
     @GetMapping
@@ -48,6 +50,14 @@ public class TeacherController {
     public R getPageTeacher(@PathVariable("currentPage") Integer currentPage, @PathVariable("pageSize") Integer pageSize) {
         Page<Teacher> teacherPage = new Page<>(currentPage, pageSize);
         teacherService.page(teacherPage, null);
+        return R.success().data("total", teacherPage.getTotal()).data("items", teacherPage.getRecords());
+    }
+
+    // 分页查询讲师列表
+    @GetMapping("/condition/{currentPage}/{pageSize}")
+    public R getConditionPageTeacher(@PathVariable("currentPage") Integer currentPage, @PathVariable("pageSize") Integer pageSize, TeacherListReqVo teacherListReqVo) {
+        Page<Teacher> teacherPage = new Page<>(currentPage, pageSize);
+        teacherService.getTeacherListByCondition(teacherPage, teacherListReqVo);
         return R.success().data("total", teacherPage.getTotal()).data("items", teacherPage.getRecords());
     }
 }

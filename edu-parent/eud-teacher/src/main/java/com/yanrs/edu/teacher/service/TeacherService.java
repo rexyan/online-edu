@@ -1,7 +1,9 @@
 package com.yanrs.edu.teacher.service;
 
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.yanrs.edu.teacher.entity.Teacher;
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.yanrs.edu.teacher.entity.vo.TeacherListReqVo;
 
 /**
  * <p>
@@ -13,4 +15,5 @@ import com.baomidou.mybatisplus.extension.service.IService;
  */
 public interface TeacherService extends IService<Teacher> {
 
+    void getTeacherListByCondition(Page<Teacher> teacherPage, TeacherListReqVo teacherListReqVo);
 }
