@@ -12,6 +12,12 @@
     <artifactId>eud-teacher</artifactId>
 
     <dependencies>
+        <!--common 依赖 -->
+        <dependency>
+            <groupId>com.yanrs.me</groupId>
+            <artifactId>edu-common</artifactId>
+            <version>0.0.1-SNAPSHOT</version>
+        </dependency>
         <!--mybatis-plus-->
         <dependency>
             <groupId>com.baomidou</groupId>

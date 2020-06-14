@@ -5,6 +5,7 @@
     <modules>
         <module>edu-teacher</module>
         <module>eud-teacher</module>
+        <module>edu-common</module>
     </modules>
     <parent>
         <groupId>org.springframework.boot</groupId>
