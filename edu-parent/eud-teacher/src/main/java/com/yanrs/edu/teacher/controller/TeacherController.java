@@ -4,6 +4,7 @@ package com.yanrs.edu.teacher.controller;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.yanrs.edu.common.R;
 import com.yanrs.edu.common.ResponseCode;
+import com.yanrs.edu.teacher.components.AliOss;
 import com.yanrs.edu.teacher.entity.Teacher;
 import com.yanrs.edu.teacher.entity.vo.AddTeacherReqVo;
 import com.yanrs.edu.teacher.entity.vo.TeacherListReqVo;
@@ -13,7 +14,8 @@ import com.yanrs.edu.teacher.service.TeacherService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-
+import org.springframework.web.multipart.MultipartFile;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -26,11 +28,28 @@ import java.util.List;
  */
 @RestController
 @RequestMapping("/edu/teacher")
+@CrossOrigin // 允许跨域
 public class TeacherController {
     // 注入 TeacherService
     @Autowired
     private TeacherService teacherService;
 
+    @Autowired
+    AliOss aliOss;
+
+    // 模拟登录
+    @PostMapping("/login")
+    public R login(){
+        return R.success().data("token", "admin");
+    }
+
+    // 模拟获取用户信息
+    @GetMapping("/info")
+    public R info(){
+        ArrayList<String> roles = new ArrayList<>();
+        roles.add("admin");
+        return R.success().data("roles", roles).data("name", "admin").data("avatar", "https://wpimg.wallstcn.com/f778738c-e4f8-4870-b634-56703b4acafe.gif");
+    }
 
     // 查询所有讲师
     @GetMapping
@@ -100,6 +119,18 @@ public class TeacherController {
         if (update) {
             return R.success().data("teacher", teacher);
         } else {
+            return R.fail();
+        }
+    }
+
+    // 上传讲师头像
+    @PostMapping("/upload/avatar")
+    public R uploadAvatar(@RequestParam("file") MultipartFile file){
+        try {
+            String url = aliOss.UploadFile(file.getOriginalFilename(), file.getInputStream());
+            return R.success().data("url", url);
+        } catch (Exception e) {
+            e.printStackTrace();
             return R.fail();
         }
     }
