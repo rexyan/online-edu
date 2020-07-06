@@ -14,6 +14,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * <p>
@@ -80,6 +84,93 @@ public class EduSubjectServiceImpl extends ServiceImpl<EduSubjectMapper, EduSubj
             e.printStackTrace();
             throw new EduException(ResponseCode.IMPORT_SUBJECT_ERROR.getCode(), ResponseCode.IMPORT_SUBJECT_ERROR.getMessage());
         }
+    }
+
+    /**
+     * 删除信息（只要此 ID 不是任何记录的 parent id ，那就可以删除）
+     * @param id
+     * @return
+     */
+    @Override
+    public Boolean deleteSubjectById(String id) {
+        // 只要此 ID 不是任何记录的 parent id ，那就可以删除
+        QueryWrapper<EduSubject> eduSubjectQueryWrapper = new QueryWrapper<>();
+        eduSubjectQueryWrapper.eq("parent_id", id);
+        Integer selectCount = baseMapper.selectCount(eduSubjectQueryWrapper);
+        if (selectCount > 0){
+            return false;
+        }else{
+            int i = baseMapper.deleteById(id);
+            return i>0;
+        }
+    }
+
+    /**
+     * 添加一级分类
+     * @return
+     */
+    @Override
+    public Boolean addLevelOne(EduSubject eduSubject) {
+        EduSubject existOneSubject = this.existOneSubject(eduSubject.getTitle());
+        if(existOneSubject == null){
+            eduSubject.setParentId("0");
+            int i = baseMapper.insert(eduSubject);
+            return i > 0;
+        }
+        return false;
+    }
+
+    /**
+     * 添加二级分类
+     * @return
+     */
+    @Override
+    public Boolean addLevelTwo(EduSubject eduSubject) {
+        EduSubject existTwoSubject = this.existTwoSubject(eduSubject.getTitle(), eduSubject.getParentId());
+        if(existTwoSubject == null){
+            int i = baseMapper.insert(eduSubject);
+            return i > 0;
+        }
+        return false;
+    }
+
+    /**
+     * 查询所有信息，并按层级组合
+     * @return
+     */
+    @Override
+    public List getAllSubject() {
+        ArrayList<Map<String, Object>> allLevelSubject = new ArrayList<>();
+
+        // 查询所有一级分类信息
+        QueryWrapper<EduSubject> oneLevelQueryWrapper = new QueryWrapper<>();
+        oneLevelQueryWrapper.eq("parent_id", "0");
+        List<EduSubject> allOneLevelEduSubject = baseMapper.selectList(oneLevelQueryWrapper);
+        for (EduSubject eduSubject: allOneLevelEduSubject) {
+            HashMap<String, Object> oneLevelSubject = new HashMap<>();
+            oneLevelSubject.put("id", eduSubject.getId());
+            oneLevelSubject.put("title", eduSubject.getTitle());
+            oneLevelSubject.put("children", new ArrayList<Map<String, Object>>());
+            allLevelSubject.add(oneLevelSubject);
+        }
+
+        // 查询所有二级分类信息
+        QueryWrapper<EduSubject> twoLevelQueryWrapper = new QueryWrapper<>();
+        oneLevelQueryWrapper.ne("parent_id", "0");
+        List<EduSubject> allTwoLevelEduSubject = baseMapper.selectList(twoLevelQueryWrapper);
+        for (EduSubject level2: allTwoLevelEduSubject) {
+            for (Map<String, Object> levelItem: allLevelSubject) {
+                // 如果 level2 的 parent id 是levelItem 的 id，那么就将其加入 children 中
+                if(level2.getParentId().equals(levelItem.get("id"))){
+                    HashMap<String, Object> twoLevelSubject = new HashMap<>();
+                    twoLevelSubject.put("id", level2.getId());
+                    twoLevelSubject.put("title", level2.getTitle());
+                    ArrayList<Map<String, Object>> children = (ArrayList<Map<String, Object>>) levelItem.get("children");
+                    children.add(twoLevelSubject);
+                }
+            }
+        }
+        return allLevelSubject;
     }
 
     /**

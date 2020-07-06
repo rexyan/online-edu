@@ -26,7 +26,7 @@ public class SwaggerConfig {
                 .title("在线教育 - 讲师管理API文档")
                 .description("本文档描述了讲师管理微服务接口定义")
                 .version("1.0")
-                .contact(new Contact("jack", "http://atguigu.com", "1111@qq.com"))
+                .contact(new Contact("rex", "http://yanrs.me", "rex_yan@126.com"))
                 .build();
     }
 }
