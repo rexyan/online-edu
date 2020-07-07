@@ -72,7 +72,9 @@ public class EduCourseServiceImpl extends ServiceImpl<EduCourseMapper, EduCourse
         }
         // 查询课程描述
         EduCourseDescription eduCourseDescription = eduCourseDescriptionService.getById(id);
-        CourseInfo.setDescription(eduCourseDescription.getDescription());
+        if (null!=eduCourseDescription){
+            CourseInfo.setDescription(eduCourseDescription.getDescription());
+        }
         return CourseInfo;
     }
 
