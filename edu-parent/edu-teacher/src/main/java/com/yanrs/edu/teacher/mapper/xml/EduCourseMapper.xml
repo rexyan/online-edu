@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.yanrs.edu.teacher.mapper.EduCourseMapper">
+    <select id="getCoursePublishInfo" resultType="com.yanrs.edu.teacher.entity.vo.GetCoursePublishRespVo">
+        SELECT c.id, c.title, c.cover, c.price, cd.description, et.name AS teacherName,
+        s1.title AS levelOne, s2.title AS levelTwo
+        FROM edu_course c LEFT OUTER JOIN edu_course_description cd ON c.id=cd.id
+        LEFT OUTER JOIN edu_teacher et ON c.teacher_id=et.id
+        LEFT OUTER JOIN edu_subject s1 ON c.subject_parent_id=s1.id
+        LEFT OUTER JOIN edu_subject s2 ON c.subject_id=s2.id
+        WHERE c.id=#{courseId}
+    </select>
+
+    <update id="publishCourseInfo">
+      UPDATE edu_course SET `status` = "Normal" WHERE  id = #{courseId}
+    </update>
+</mapper>

@@ -51,6 +51,7 @@ public class EduChapterServiceImpl extends ServiceImpl<EduChapterMapper, EduChap
         // 根据章节 ID 查询小节信息
         QueryWrapper<EduVideo> eduVideoQueryWrapper = new QueryWrapper<>();
         eduVideoQueryWrapper.eq("course_id", id);
+        eduVideoQueryWrapper.orderByAsc("sort");
         List<EduVideo> eduVideoList = eduVideoService.list(eduVideoQueryWrapper);
 
         // 遍历所有章节，将值复制到 GetChapterRespVo 中

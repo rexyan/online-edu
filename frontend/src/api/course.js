@@ -44,5 +44,19 @@ export default {
             url: '/edu/course/'+ id,
             method: 'delete'
         })
-    }
+    },
+    // 根据课程 ID 查询课程详情信息
+    getCoursePublishInfo(id){
+        return request({
+            url: '/edu/course/publish/info/'+ id,
+            method: 'get'
+        })
+    },
+    // 发布课程
+    publishCourseInfo(id){
+        return request({
+            url: '/edu/course/publish/'+ id,
+            method: 'post'
+        })
+    },
 }

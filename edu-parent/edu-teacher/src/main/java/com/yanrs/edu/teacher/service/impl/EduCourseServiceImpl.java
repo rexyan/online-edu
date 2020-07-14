@@ -3,6 +3,7 @@ package com.yanrs.edu.teacher.service.impl;
 import com.yanrs.edu.teacher.entity.EduCourse;
 import com.yanrs.edu.teacher.entity.EduCourseDescription;
 import com.yanrs.edu.teacher.entity.vo.AddCourseReqVo;
+import com.yanrs.edu.teacher.entity.vo.GetCoursePublishRespVo;
 import com.yanrs.edu.teacher.handler.EduException;
 import com.yanrs.edu.teacher.mapper.EduCourseMapper;
 import com.yanrs.edu.teacher.service.EduChapterService;
@@ -107,5 +108,15 @@ public class EduCourseServiceImpl extends ServiceImpl<EduCourseMapper, EduCourse
         // 删除课程本身
         int i = baseMapper.deleteById(id);
         return i>0;
+    }
+
+    @Override
+    public GetCoursePublishRespVo getCoursePublishInfo(String id) {
+        return baseMapper.getCoursePublishInfo(id);
+    }
+
+    @Override
+    public Boolean publishCourseInfo(String id) {
+        return baseMapper.publishCourseInfo(id);
     }
 }

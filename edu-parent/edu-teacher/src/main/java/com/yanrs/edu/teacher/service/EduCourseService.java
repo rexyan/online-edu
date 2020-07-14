@@ -3,6 +3,7 @@ package com.yanrs.edu.teacher.service;
 import com.yanrs.edu.teacher.entity.EduCourse;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.yanrs.edu.teacher.entity.vo.AddCourseReqVo;
+import com.yanrs.edu.teacher.entity.vo.GetCoursePublishRespVo;
 
 /**
  * <p>
@@ -21,4 +22,8 @@ public interface EduCourseService extends IService<EduCourse> {
     Boolean updateCourseInfo(String id, AddCourseReqVo addCourseReqVo);
 
     Boolean deleteCourseById(String id);
+
+    GetCoursePublishRespVo getCoursePublishInfo(String id);
+
+    Boolean publishCourseInfo(String id);
 }

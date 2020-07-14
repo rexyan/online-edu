@@ -4,6 +4,7 @@ package com.yanrs.edu.teacher.controller;
 import com.yanrs.edu.common.R;
 import com.yanrs.edu.teacher.entity.EduCourse;
 import com.yanrs.edu.teacher.entity.vo.AddCourseReqVo;
+import com.yanrs.edu.teacher.entity.vo.GetCoursePublishRespVo;
 import com.yanrs.edu.teacher.service.EduCourseService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -75,10 +76,37 @@ public class EduCourseController {
         return R.success().data("courseList", courseList);
     }
 
+    /**
+     * 删除课程信息
+     * @param id
+     * @return
+     */
     @DeleteMapping("/{id}")
     public R deleteCourseById(@PathVariable("id") String id){
         Boolean a = eduCourseService.deleteCourseById(id);
         return a?R.success():R.error();
+    }
+
+    /**
+     * 获取待发布的课程的信息。包含课程基本信息，讲师信息，章节信息等
+     * @param id
+     * @return
+     */
+    @GetMapping("/publish/info/{id}")
+    public R getCoursePublishInfo(@PathVariable("id") String id){
+        GetCoursePublishRespVo coursePublishInfo = eduCourseService.getCoursePublishInfo(id);
+        return R.success().data("coursePublishInfo", coursePublishInfo);
+    }
+
+    /**
+     * 发布课程
+     * @param id
+     * @return
+     */
+    @PostMapping("/publish/{id}")
+    public R publishCourseInfo(@PathVariable("id") String id){
+        Boolean b = eduCourseService.publishCourseInfo(id);
+        return b?R.success():R.fail();
     }
 }
 

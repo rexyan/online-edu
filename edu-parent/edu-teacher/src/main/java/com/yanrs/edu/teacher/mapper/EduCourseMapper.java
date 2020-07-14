@@ -2,6 +2,7 @@ package com.yanrs.edu.teacher.mapper;
 
 import com.yanrs.edu.teacher.entity.EduCourse;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.yanrs.edu.teacher.entity.vo.GetCoursePublishRespVo;
 
 /**
  * <p>
@@ -13,4 +14,7 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
  */
 public interface EduCourseMapper extends BaseMapper<EduCourse> {
 
+    GetCoursePublishRespVo getCoursePublishInfo(String courseId);
+
+    Boolean publishCourseInfo(String courseId);
 }
