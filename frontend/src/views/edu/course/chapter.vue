@@ -71,6 +71,28 @@
             <el-form-item label="小节排序">
                 <el-input-number v-model="video.sort" :min="0" controls-position="right"/>
             </el-form-item>
+            <!-- 视频上传 -->
+            <el-form-item label="上传视频">
+                <el-upload
+                      :on-success="handleVodUploadSuccess"
+                      :on-remove="handleVodRemove"
+                      :before-remove="beforeVodRemove" 
+                      :on-exceed="handleUploadExceed"
+                      :file-list="fileList"
+                      :action="BASE_API+'/edu/videotape/upload'"
+                      :limit="1"
+                      class="upload-demo">
+                <el-button size="small" type="primary">上传视频</el-button>
+                <el-tooltip placement="right-end">
+                    <div slot="content">最大支持1G，<br>
+                        支持3GP、ASF、AVI、DAT、DV、FLV、F4V、<br>
+                        GIF、M2T、M4V、MJ2、MJPEG、MKV、MOV、MP4、<br>
+                        MPE、MPG、MPEG、MTS、OGG、QT、RM、RMVB、<br>
+                        SWF、TS、VOB、WMV、WEBM 等视频格式上传</div>
+                    <i class="el-icon-question"/>
+                </el-tooltip>
+                </el-upload>
+            </el-form-item>
         </el-form>
         <div slot="footer" class="dialog-footer">
             <el-button @click="dialogVideoFormVisible = false">取 消</el-button>
@@ -102,9 +124,13 @@ export default {
               sort: 0,
               chapterId: "",
               courseId: "",
-              id: ""
+              id: "",
+              videoSourceId: "",
+              videoOriginalName: ""
             },
-            dialogVideoFormVisible: false //是否显示小节表单
+            dialogVideoFormVisible: false, //是否显示小节表单,
+            BASE_API: process.env.BASE_API, // 接口API地址
+            fileList: [],
         }
     },
     created(){
@@ -148,6 +174,8 @@ export default {
           video.getVideoById(videoId)
           .then(response => {
             this.video = response.data.eduVideo
+            // 将视频名称放入 fileList 中，用于数据回显
+            this.fileList = [{'name': this.video.videoOriginalName}]
           })
           .catch(response => {
             this.$message({
@@ -219,6 +247,7 @@ export default {
           // 清空模态框数据
           this.video.title = ""
           this.video.sort = ""
+          this.fileList = []
         },
 
         // 删除章节
@@ -340,6 +369,29 @@ export default {
             this.$message({
                 type: 'error',
                 message: '获取章节和小节信息失败'
+            })
+          })
+        },
+
+        // 视频上传成功回调
+        handleVodUploadSuccess(response, file, fileList) {
+          this.video.videoSourceId = response.data.videoId
+          this.video.videoOriginalName = file.name
+        },
+        // 视频上传之前调用的方法
+        handleUploadExceed(files, fileList) {
+          this.$message.warning('想要重新上传视频，请先删除已上传的视频')
+        },
+        // 删除视频之前
+        beforeVodRemove(file, fileList){
+           return this.$confirm(`确定移除 ${file.name}？`)
+        },
+        // 删除视频
+        handleVodRemove(){
+            video.removeAliVideo(this.video.videoSourceId).then(response=>{
+            this.$message({
+              type: 'success',
+              message: "删除成功！"
             })
           })
         },

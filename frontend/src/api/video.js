@@ -30,5 +30,12 @@ export default {
             url: '/edu/video/' + id,
             method: 'delete'
         })
+    },
+    // 删除阿里云视频
+    removeAliVideo(videoId){
+        return request({
+            url: '/edu/videotape/' + videoId,
+            method: 'delete'
+        })
     }
 }
